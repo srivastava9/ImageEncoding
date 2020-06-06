@@ -26,8 +26,8 @@ class ImageModel(TimestampedModel):
         return image_as_base64(self.img.path)
 
     def get_time(self, *args, **kwargs):
-        print(super().get_created_time(), "aditya time")
-      # return super().get_created_time
+        # print(super().get_created_time, "aditya time")
+        return super().get_created_time()
 
     class Meta:
         verbose_name_plural = 'Images'
