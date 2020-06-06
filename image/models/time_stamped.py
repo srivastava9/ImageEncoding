@@ -15,6 +15,9 @@ class TimestampedModel(models.Model):
         auto_now=True
     )
 
+    def get_created_time(self):
+        return self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+
     class Meta:
         abstract = True
         ordering = ['-created_at', '-updated_at']

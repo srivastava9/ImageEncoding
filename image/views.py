@@ -4,8 +4,18 @@ from rest_framework.response import Response
 from rest_framework import status
 # Create your views here.
 import hashlib
+from Crypto.Cipher import AES
 from .serializers import ImageSerializer
 from .models import ImageModel
+
+
+def AES_Encrypt(text):
+    key = "aditya12345698gf"
+    IV = 16 * '\x00'
+    mode = AES.MODE_CBC
+    encryptor = AES.new(key, mode, IV=IV)
+    cypertext = encryptor.encrypt(text)
+    return cypertext
 
 
 class ImageUpload(APIView):
@@ -15,9 +25,15 @@ class ImageUpload(APIView):
             serializer.save()
             Image = ImageModel(**serializer.validated_data)
             encoded_string = Image.get_base64()
-            md5_hash = hashlib.md5.digest().encode(encoded_string).strip()
+            md5_hash = hashlib.md5(b'%s' % (encoded_string))
+
+            # .digest().encode(encoded_string).strip()
+            hash_encoded = md5_hash.hexdigest()
+            timestr = Image.get_time()
+            AES_enc = AES_Encrypt(timestr)
             return Response({
-                "md5-hash": md5_hash,
+                "AES_encryption": AES_enc,
+                "md5-hash": hash_encoded,
                 "encoded": encoded_string
             }, status=status.HTTP_201_CREATED)
         else:
